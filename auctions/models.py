@@ -2,7 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
-
 class User(AbstractUser):
     pass
 
@@ -17,14 +16,15 @@ class Listing(models.Model):
 
     CATEGORY_CHOICES = [
     ("COL", 'Collectibles'),
+    ("BOK", 'Books'),
     ("ELE", 'Electronics'),
     ("FAS", 'Fashion'),
     ("HOM", 'Home and Garden'),
     ("AUT", 'Auto parts'),
-    ("MUS", "Musical instruments"),
-    ("SPO", "Sporting goods"),
-    ("TOY", "Toys and Hobbies"),
-    ("OTH", "Other"),
+    ("MUS", 'Musical instruments'),
+    ("SPO", 'Sporting goods'),
+    ("TOY", 'Toys and Hobbies'),
+    ("OTH", 'Other'),
     ]
     category = models.CharField(
         max_length=3,

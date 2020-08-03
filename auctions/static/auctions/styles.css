@@ -1,3 +1,28 @@
 body {
     padding: 10px;
 }
+.create-form {
+    padding: 0 10rem 0 10rem;
+}
+.header-2 {
+    text-align: center;
+}
+.save-btn {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    float: right;
+}
+.container-fluid {
+    height: 20rem;
+    border-top: 1px solid #dee2e6;
+    border-right: 1px solid #dee2e6;
+    border-left: 1px solid #dee2e6;
+}
+.image-container {
+    text-align: center;
+    padding: 1rem 0;
+}
+.img-fluid {
+    width: auto;
+    height: 18rem;
+}
