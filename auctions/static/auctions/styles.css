@@ -22,7 +22,43 @@ body {
     text-align: center;
     padding: 1rem 0;
 }
-.img-fluid {
+.index-image {
     width: auto;
     height: 18rem;
+}
+.index-link:link, .index-link:visited {
+    color: #333;
+}
+.index-link:hover, .index-link:active {
+    text-decoration: none;
+    color: #000;
+}
+.listing-img {
+    height: 18rem;
+    text-align: center;
+}
+.listing-star {
+    background: #fff;
+    border: none;
+}
+.star {
+    color: #007bff;
+}
+.btn-listing {
+    text-align: center;
+}
+.button-bid {
+    margin-top: 1rem;
+}
+.comments-outer {
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    padding: .375rem .75rem;
+    color: #495057;
+}
+.comment-button {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
 }

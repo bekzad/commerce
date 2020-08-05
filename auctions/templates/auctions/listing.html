@@ -1,0 +1,92 @@
+{% extends "auctions/layout.html" %}
+{% block title %}Listing{% endblock %}
+{% block body %}
+    <h2>Listing: {{ listing.title }}</h2>
+    <form action="{% url 'watchlist' listing.id %}" method="post">
+        {% csrf_token %}
+        {% if watchlist == 'a' %}
+            <input type="hidden" name="watchlist" value="dewatchlist">
+            <button type="submit" class="listing-star"><i class="fas fa-star fa-2x star"></i></button>
+            Watchlisted
+        {% elif watchlist == 'n' %}
+            <input type="hidden" name="watchlist" value="watchlist">
+            <button type="submit" class="listing-star"><i class="far fa-star fa-2x star"></i></button>
+            Not Watchlisted
+        {% endif %}
+    </form>
+    
+    <div class="image-container">
+        <img src="{{ listing.image }}" alt="{{ listing.title }}" class="img-fluid listing-img">
+    </div>
+
+    <p>{{ listing.description }}</p>
+    <h4><b>${{ current_price }}</b></h4>
+
+    <form action="{% url 'bid' listing.id %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            {% if bid_number|add:"0" > 0 %}
+                {% if bidder == request.user %}
+                    <small>{{ bid_number }} bid(s) so far. You are the current bidder</small>
+                {% else %}
+                    <small>{{ bid_number }} bid(s) so far. {{ bidder }} is the current bidder</small>
+                {% endif %}
+            {% else %}
+                <small>No bids yet.</small>
+            {% endif %}
+            {% if request.user != listing.user %}
+                {{ bidForm }}
+
+                {% if bidForm %}
+                    <input type="submit" class="btn btn-primary button-bid" value="Place Bid">
+                {% endif %}
+            {% endif %}
+        </div>
+    </form>
+
+    <br>
+    <h3>Details</h3>
+    <ul>
+        <li>Listed by: {{ listing.user }}</li>
+        <li>Category: {{ listing.get_category_display }}</li>
+    </ul>
+
+    {% if listing.user == request.user %}
+        <form action="{% url 'close_listing' listing.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="close" value="close">
+            <div class="btn-listing">
+                <input type="submit" value="Close the Listing" class="btn btn-danger">
+            </div>
+            
+        </form>
+    {% endif %}
+    <br>
+    <div class="comments-outer">
+        <h2 style="text-align:center">Comments</h2>
+        {% for comment in comments %}
+            <div class="comments-meta">
+                <h4>{{ comment.user }}</h4>
+                <small>{{ comment.created }}</small>
+            </div>
+            <div class=comments-content>
+                <p>{{ comment.text_comment }}</p>
+            </div>
+        {% empty %}
+            <p>No comments yet!</p>
+        {% endfor %}
+    </div>
+
+    <br>
+
+    {% if create_comment %}
+        <form action="{% url 'comment' listing.id %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ create_comment }}
+                <input type="submit" value="Write" class="btn btn-primary comment-button">
+            </div>
+        </form>
+    {% endif %}
+
+{% endblock %}

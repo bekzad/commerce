@@ -18,3 +18,27 @@ class CreateListing(forms.ModelForm):
             'image': "URL of an image (optional)",
             'starting_price': "Starting price in USD"
         }
+class CreateBid(forms.ModelForm):
+    class Meta:
+        model = Bid
+        fields = [
+            'price'
+        ]
+        widgets = {
+            'price': forms.NumberInput(attrs={'class':'form-control','placeholder':'Bid'})
+        }
+        labels = {
+            'price': ''
+        }
+class CreateComment(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = [
+            'text_comment'
+        ]
+        widgets = {
+            'text_comment': forms.Textarea(attrs={'class':'form-control','placeholder':'Leave a comment!'}),
+        }
+        labels ={
+            'text_comment': ''
+        }

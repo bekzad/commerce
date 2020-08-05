@@ -1,0 +1,27 @@
+{% extends "auctions/layout.html" %}
+{% block title %}Listing{% endblock %}
+{% block body %}
+    <h2>Listing: {{ listing.title }}</h2>
+    
+    {% if request.user == listing.winner %}
+        <h2 style="text-align: center;">Congratulations! You are the winner of this auction!</h2>
+    {% else %}
+        <h2 style="text-align: center;">{{ listing.winner }} is the winner of this auction!</h2>
+    {% endif %}
+
+    <div class="image-container">
+        <img src="{{ listing.image }}" alt="{{ listing.title }}" class="img-fluid listing-img">
+    </div>
+
+    <p>{{ listing.description }}</p>
+    <h4><b>${{ current_price }}</b></h4>
+
+    <h3>Details</h3>
+    <ul>
+        <li>Listed by: {{ listing.user }}</li>
+        <li>Category: {{ listing.get_category_display }}</li>
+    </ul>
+
+  
+
+{% endblock %}
