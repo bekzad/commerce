@@ -4,11 +4,11 @@
     <h2>Listing: {{ listing.title }}</h2>
     <form action="{% url 'watchlist' listing.id %}" method="post">
         {% csrf_token %}
-        {% if watchlist == 'a' %}
+        {% if watchlist == True %}
             <input type="hidden" name="watchlist" value="dewatchlist">
             <button type="submit" class="listing-star"><i class="fas fa-star fa-2x star"></i></button>
             Watchlisted
-        {% elif watchlist == 'n' %}
+        {% elif watchlist == False or watchlist == 'never_watchlisted' %}
             <input type="hidden" name="watchlist" value="watchlist">
             <button type="submit" class="listing-star"><i class="far fa-star fa-2x star"></i></button>
             Not Watchlisted

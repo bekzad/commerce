@@ -77,9 +77,13 @@ def create_listing(request):
         if form.is_valid():
             title = form.cleaned_data["title"]
             description = form.cleaned_data["description"]
-            image = form.cleaned_data["image"]
             starting_price = form.cleaned_data["starting_price"]
             category = form.cleaned_data["category"]
+
+            if form.cleaned_data["image"]:
+                image = form.cleaned_data["image"]
+            else:
+                image = 'https://sisterhoodofstyle.com/wp-content/uploads/2018/02/no-image-1.jpg'
 
             newListing = Listing(user=request.user,title=title,description=description,image=image,active=True,starting_price=starting_price,category=category)
             newListing.save()
@@ -96,6 +100,7 @@ def create_listing(request):
     })
 
 def listing(request, listing_id):
+    # Try to get the listing from database by the id provided
     try:
         listing = Listing.objects.get(pk=listing_id)
     except Listing.DoesNotExist:
@@ -119,28 +124,13 @@ def listing(request, listing_id):
     if listing.active:
         # If the user is signed in render a template with watchlist
         if request.user.is_authenticated:
-            watchlisted = listing.watchlisted.filter(user=request.user).last()
-            print(watchlisted)
-            watchlist = Watchlist.objects.filter(user=request.user, listing=listing).last()
-            print(watchlist)
+            # If the listing has ever been watchlisted
             try:
                 watchlist = Watchlist.objects.get(user=request.user, listing=listing)
-                
-                if watchlist.active == True:
-                    return render(request, "auctions/listing.html", {
-                        "listing": listing,
-                        "watchlist":"a",
-                        "bidForm": CreateBid(),
-                        "current_price": current_price,
-                        "bid_number": number_of_bids,
-                        "bidder": bidder,
-                        "create_comment":CreateComment(),
-                        "comments":comments
-                    })
 
                 return render(request, "auctions/listing.html", {
                     "listing": listing,
-                    "watchlist":"n",
+                    "watchlist":watchlist.active,
                     "bidForm": CreateBid(),
                     "current_price": current_price,
                     "bid_number": number_of_bids,
@@ -148,10 +138,11 @@ def listing(request, listing_id):
                     "create_comment":CreateComment(),
                     "comments":comments
                 })
+            # If the listing has never been watchlisted
             except Watchlist.DoesNotExist:
                 return render(request, "auctions/listing.html", {
                     "listing": listing,
-                    "watchlist":"n",
+                    "watchlist":"never_watchlisted",
                     "bidForm": CreateBid(),
                     "current_price": current_price,
                     "bid_number": number_of_bids,
