@@ -238,3 +238,16 @@ def comment(request, listing_id):
             newComment = Comment(text_comment=user_comment.cleaned_data['text_comment'], user=request.user, listing=listing)
             newComment.save()
     return HttpResponseRedirect(reverse("listing", args=[listing_id]))
+
+@login_required
+def watchlist_page(request):
+
+    watchlists = request.user.my_watchlist.filter(active=True)
+
+    listings = []
+    for watchlist in watchlists:
+        listings.append(watchlist.listing)
+
+    return render(request, "auctions/watchlist.html",{
+        "listings":listings
+    })
