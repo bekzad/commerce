@@ -12,6 +12,16 @@ from .forms import CreateListing, CreateBid, CreateComment
 
 def index(request):
     listings = Listing.objects.filter(active=True)
+
+    # Get the bids from the database to use them for current price when there has never been any bids
+    for listing in listings:
+        bids = listing.bids.all()
+        if bids: 
+            listing.current_price = listing.bids.last().price
+        else:
+            listing.current_price = listing.starting_price
+        listing.save()
+
     return render(request, "auctions/index.html", {
         "listings":listings
     })
@@ -106,15 +116,11 @@ def listing(request, listing_id):
     except Listing.DoesNotExist:
         raise Http404("Listing does not exist") 
 
-    # Get the bids from the database to use them for current price
+    # Also to find out who is the last bidder
     bids = listing.bids.all()
     if bids: 
-        current_price = listing.bids.last().price
-        number_of_bids = len(bids)
         bidder = listing.bids.last().user
     else:
-        current_price = listing.starting_price
-        number_of_bids = 0
         bidder = None
 
     # Get the comments from the database
@@ -132,8 +138,6 @@ def listing(request, listing_id):
                     "listing": listing,
                     "watchlist":watchlist.active,
                     "bidForm": CreateBid(),
-                    "current_price": current_price,
-                    "bid_number": number_of_bids,
                     "bidder": bidder,
                     "create_comment":CreateComment(),
                     "comments":comments
@@ -144,8 +148,6 @@ def listing(request, listing_id):
                     "listing": listing,
                     "watchlist":"never_watchlisted",
                     "bidForm": CreateBid(),
-                    "current_price": current_price,
-                    "bid_number": number_of_bids,
                     "bidder": bidder,
                     "create_comment":CreateComment(),
                     "comments":comments
@@ -154,8 +156,6 @@ def listing(request, listing_id):
         # If the user isn't signed in render a template without watchlist
         return render(request, "auctions/listing.html", {
                 "listing": listing,
-                "current_price": current_price,
-                "bid_number": number_of_bids,
                 "bidder": bidder,
                 "comments":comments
             })
@@ -164,8 +164,7 @@ def listing(request, listing_id):
     else:
         if request.user == listing.winner or request.user == listing.user:
             return render(request, "auctions/winner.html", {
-                "listing": listing,
-                "current_price": current_price
+                "listing": listing
             })
         else:
             raise Http404("Listing is not active")
@@ -208,14 +207,21 @@ def bid(request, listing_id):
                     return HttpResponseRedirect(reverse("listing", args=[listing_id]))
                 else:
                     newBid = Bid(price=userBid.cleaned_data['price'],listing=listing,user=request.user) 
+                    listing.current_price = current_price
                     newBid.save()
+                    listing.save()
             else:
                 if userBid.cleaned_data['price'] <= current_price:
                     return HttpResponseRedirect(reverse("listing", args=[listing_id]))
                 else:
                     newBid = Bid(price=userBid.cleaned_data['price'],listing=listing,user=request.user) 
+                    listing.current_price = current_price
                     newBid.save()
+                    listing.save()
 
+        bids = listing.bids.all()
+        listing.number_of_bids = len(bids)
+        listing.save()
     return HttpResponseRedirect(reverse("listing", args=[listing_id]))
 
 @login_required

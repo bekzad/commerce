@@ -15,8 +15,14 @@
                     <a href="{% url 'listing' listing.id %}" class="index-link">
                         <h3>{{ listing.title }}</h3>
                     </a>
-                    <h5><b>Price:</b>  ${{ listing.starting_price }} </h5> 
-                    <small>Created {{ listing.created }}</small>
+                    <h5><b>Price:</b>  ${{ listing.current_price }} </h5> 
+                    <p><b>Listed by:</b> {{ listing.user.first_name }} {{ listing.user.last_name }}</p>
+                    {% if listing.number_of_bids %}
+                        <small>{{ listing.number_of_bids }} bid(s)</small> <br>
+                    {% else %}
+                        <small>No bids yet</small> <br>
+                    {% endif %}
+                    <small>Created: {{ listing.created }}</small>
                 </div>
             </div>
         </div>

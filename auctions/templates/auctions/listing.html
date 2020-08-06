@@ -20,16 +20,16 @@
     </div>
 
     <p>{{ listing.description }}</p>
-    <h4><b>${{ current_price }}</b></h4>
+    <h4><b>${{ listing.current_price }}</b></h4>
 
     <form action="{% url 'bid' listing.id %}" method="post">
         {% csrf_token %}
         <div class="form-group">
-            {% if bid_number|add:"0" > 0 %}
+            {% if listing.number_of_bids|add:"0" > 0 %}
                 {% if bidder == request.user %}
-                    <small>{{ bid_number }} bid(s) so far. You are the current bidder</small>
+                    <small>{{ listing.number_of_bids }} bid(s) so far. You are the current bidder</small>
                 {% else %}
-                    <small>{{ bid_number }} bid(s) so far. {{ bidder }} is the current bidder</small>
+                    <small>{{ listing.number_of_bids }} bid(s) so far. {{ bidder }} is the current bidder</small>
                 {% endif %}
             {% else %}
                 <small>No bids yet.</small>

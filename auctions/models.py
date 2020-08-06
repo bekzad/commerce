@@ -4,6 +4,8 @@ from django.db import models
 
 class User(AbstractUser):
     email = models.EmailField(error_messages={'unique': 'A user with that email already exists.'}, max_length=254, unique=True, verbose_name='email address')
+    first_name = models.CharField(blank=False, max_length=30, verbose_name='first name')
+    last_name = models.CharField(blank=False, max_length=150, verbose_name='last name')
 
 class Listing(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="my_listings")
@@ -14,6 +16,9 @@ class Listing(models.Model):
     active = models.BooleanField()
     starting_price = models.DecimalField(max_digits=19, decimal_places=2)
     winner = models.ForeignKey(User,on_delete=models.CASCADE,related_name="my_winnings",null=True,blank=True)
+    current_price = models.DecimalField(max_digits=19, decimal_places=2,null=True,blank=True)
+    number_of_bids = models.IntegerField(null=True,blank=True) #Default=0
+    # current_bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="my_current_bids",null=True,blank=True)
 
     CATEGORY_CHOICES = [
     ("COL", 'Collectibles'),
