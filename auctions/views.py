@@ -66,6 +66,11 @@ def register(request):
                 "message": "Passwords must match."
             })
 
+        if not username or not email or not first_name or not last_name or not password or not confirmation:
+            return render(request, "auctions/register.html", {
+                "message": "All fields are required."
+            })
+
         # Attempt to create new user
         try:
             user = User.objects.create_user(username, email, password, first_name=first_name, last_name=last_name)
