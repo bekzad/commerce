@@ -47,7 +47,7 @@
     <br>
     <h3>Details</h3>
     <ul>
-        <li>Listed by: {{ listing.user }}</li>
+        <li>Listed by: {{ listing.user.first_name }} {{ listing.user.last_name }}</li>
         <li>Category: {{ listing.get_category_display }}</li>
     </ul>
 

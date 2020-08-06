@@ -221,9 +221,15 @@ def bid(request, listing_id):
 @login_required
 def close_listing(request, listing_id):
     if request.method == 'POST':
+
         listing = Listing.objects.get(pk=listing_id)
         listing.active = False
-        bidder = listing.bids.last().user
+
+        try:
+            bidder = listing.bids.last().user
+        except AttributeError:
+            bidder = None
+
         listing.winner = bidder
         listing.save()
         return HttpResponseRedirect(reverse("listing", args=[listing_id]))
@@ -249,5 +255,32 @@ def watchlist_page(request):
         listings.append(watchlist.listing)
 
     return render(request, "auctions/watchlist.html",{
+        "listings":listings
+    })
+
+def category_page(request):
+
+    categories = [
+    ("COL", 'Collectibles'),
+    ("BOK", 'Books'),
+    ("ELE", 'Electronics'),
+    ("FAS", 'Fashion'),
+    ("HOM", 'Home and Garden'),
+    ("AUT", 'Auto parts'),
+    ("MUS", 'Musical instruments'),
+    ("SPO", 'Sporting goods'),
+    ("TOY", 'Toys and Hobbies'),
+    ("OTH", 'Other'),
+    ]
+
+    return render(request, "auctions/categories.html", {
+        "categories":categories
+    })
+
+def category(request, category_name):
+
+    listings = Listing.objects.filter(category=category_name, active=True)
+
+    return render(request, "auctions/category.html", {
         "listings":listings
     })

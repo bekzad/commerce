@@ -16,7 +16,8 @@
                         <h3>{{ listing.title }}</h3>
                     </a>
                     <h5><b>Price:</b>  ${{ listing.starting_price }} </h5> 
-                    <small>Created {{ listing.created }}</small>
+                    <p><b>Listed by:</b> {{ listing.user.first_name }} {{ listing.user.last_name }}</p>
+                    <small>Created: {{ listing.created }}</small>
                 </div>
             </div>
         </div>

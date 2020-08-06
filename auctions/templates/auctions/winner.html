@@ -1,10 +1,11 @@
 {% extends "auctions/layout.html" %}
-{% block title %}Listing{% endblock %}
+{% block title %}Winner{% endblock %}
 {% block body %}
-    <h2>Listing: {{ listing.title }}</h2>
     
     {% if request.user == listing.winner %}
         <h2 style="text-align: center;">Congratulations! You are the winner of this auction!</h2>
+    {% elif listing.winner == None %}
+        <h2 style="text-align: center;">Sorry no one won this auction!</h2>
     {% else %}
         <h2 style="text-align: center;">{{ listing.winner }} is the winner of this auction!</h2>
     {% endif %}
@@ -18,7 +19,7 @@
 
     <h3>Details</h3>
     <ul>
-        <li>Listed by: {{ listing.user }}</li>
+        <li>Listed by: {{ listing.user.first_name }} {{ listing.user.last_name }}</li>
         <li>Category: {{ listing.get_category_display }}</li>
     </ul>
 

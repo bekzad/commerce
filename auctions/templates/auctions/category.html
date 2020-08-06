@@ -1,8 +1,8 @@
 {% extends "auctions/layout.html" %}
-{% block title %}Watchlist{% endblock %}
+{% block title %}{{ listings.0.get_category_display }}{% endblock %}
 {% block body %}
-    <h2>My watchlist</h2>
-    
+    <h2>{{ listings.0.get_category_display }}</h2>
+
     {% for listing in listings %}
         <div class="container-fluid">
             <div class="row">
@@ -16,12 +16,13 @@
                         <h3>{{ listing.title }}</h3>
                     </a>
                     <h5><b>Price:</b>  ${{ listing.starting_price }} </h5> 
-                    <small>Created {{ listing.created }}</small>
+                    <p><b>Listed by:</b> {{ listing.user.first_name }} {{ listing.user.last_name }}</p>
+                    <small>Created: {{ listing.created }}</small>
                 </div>
             </div>
         </div>
-        {% empty %}
-        <h2 style="text-align: center;">Nothing in the watchlist</h2>
     {% endfor %}
-    <div class="border-bottom"></div>
+    {% if listings %}
+        <div class="border-bottom"></div>
+    {% endif %}
 {% endblock %}
