@@ -218,9 +218,7 @@ def bid(request, listing_id):
                     newBid.save()
 
         bids = listing.bids.all()
- 
         listing.current_bidder = listing.bids.last().user
-        
         listing.number_of_bids = len(bids)
         listing.save()
 
