@@ -1,6 +1,13 @@
 {% extends "auctions/layout.html" %}
 {% block title %}Listing{% endblock %}
 {% block body %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger" role="alert">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
     <h2>Listing: {{ listing.title }}</h2>
     <form action="{% url 'watchlist' listing.id %}" method="post">
         {% csrf_token %}
@@ -26,10 +33,10 @@
         {% csrf_token %}
         <div class="form-group">
             {% if listing.number_of_bids|add:"0" > 0 %}
-                {% if bidder == request.user %}
+                {% if listing.current_bidder == request.user %}
                     <small>{{ listing.number_of_bids }} bid(s) so far. You are the current bidder</small>
                 {% else %}
-                    <small>{{ listing.number_of_bids }} bid(s) so far. {{ bidder }} is the current bidder</small>
+                    <small>{{ listing.number_of_bids }} bid(s) so far. {{ listing.current_bidder.first_name }} {{ listing.current_bidder.last_name }} is the current bidder</small>
                 {% endif %}
             {% else %}
                 <small>No bids yet.</small>

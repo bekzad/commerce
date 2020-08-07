@@ -7,7 +7,7 @@
     {% elif listing.winner == None %}
         <h2 style="text-align: center;">Sorry no one won this auction!</h2>
     {% else %}
-        <h2 style="text-align: center;">{{ listing.winner }} is the winner of this auction!</h2>
+        <h2 style="text-align: center;">{{ listing.winner.first_name }} {{ listing.winner.last_name }} is the winner of this auction!</h2>
     {% endif %}
 
     <div class="image-container">

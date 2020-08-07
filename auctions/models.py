@@ -17,8 +17,8 @@ class Listing(models.Model):
     starting_price = models.DecimalField(max_digits=19, decimal_places=2)
     winner = models.ForeignKey(User,on_delete=models.CASCADE,related_name="my_winnings",null=True,blank=True)
     current_price = models.DecimalField(max_digits=19, decimal_places=2,null=True,blank=True)
-    number_of_bids = models.IntegerField(null=True,blank=True) #Default=0
-    # current_bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="my_current_bids",null=True,blank=True)
+    number_of_bids = models.IntegerField(null=True,blank=True, default=0)
+    current_bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="my_current_bids",null=True,blank=True)
 
     CATEGORY_CHOICES = [
     ("COL", 'Collectibles'),

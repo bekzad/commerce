@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 
 from .models import User, Listing, Bid, Comment, Watchlist
@@ -121,13 +122,6 @@ def listing(request, listing_id):
     except Listing.DoesNotExist:
         raise Http404("Listing does not exist") 
 
-    # Also to find out who is the last bidder
-    bids = listing.bids.all()
-    if bids: 
-        bidder = listing.bids.last().user
-    else:
-        bidder = None
-
     # Get the comments from the database
     comments = listing.comments.all()
 
@@ -143,7 +137,6 @@ def listing(request, listing_id):
                     "listing": listing,
                     "watchlist":watchlist.active,
                     "bidForm": CreateBid(),
-                    "bidder": bidder,
                     "create_comment":CreateComment(),
                     "comments":comments
                 })
@@ -153,7 +146,6 @@ def listing(request, listing_id):
                     "listing": listing,
                     "watchlist":"never_watchlisted",
                     "bidForm": CreateBid(),
-                    "bidder": bidder,
                     "create_comment":CreateComment(),
                     "comments":comments
                 })
@@ -161,7 +153,6 @@ def listing(request, listing_id):
         # If the user isn't signed in render a template without watchlist
         return render(request, "auctions/listing.html", {
                 "listing": listing,
-                "bidder": bidder,
                 "comments":comments
             })
 
@@ -209,24 +200,30 @@ def bid(request, listing_id):
         if userBid.is_valid():
             if len(bids) == 0:
                 if userBid.cleaned_data['price'] < current_price:
+                    messages.add_message(request, messages.SUCCESS, 'The bid must be greater than or equal to the initial price!')
                     return HttpResponseRedirect(reverse("listing", args=[listing_id]))
                 else:
                     newBid = Bid(price=userBid.cleaned_data['price'],listing=listing,user=request.user) 
-                    listing.current_price = current_price
                     newBid.save()
+                    listing.current_price = userBid.cleaned_data['price']
                     listing.save()
             else:
                 if userBid.cleaned_data['price'] <= current_price:
+                    messages.add_message(request, messages.SUCCESS, 'The bid must be greater than the current bid!')
                     return HttpResponseRedirect(reverse("listing", args=[listing_id]))
                 else:
                     newBid = Bid(price=userBid.cleaned_data['price'],listing=listing,user=request.user) 
-                    listing.current_price = current_price
-                    newBid.save()
+                    listing.current_price = userBid.cleaned_data['price']
                     listing.save()
+                    newBid.save()
 
         bids = listing.bids.all()
+ 
+        listing.current_bidder = listing.bids.last().user
+        
         listing.number_of_bids = len(bids)
         listing.save()
+
     return HttpResponseRedirect(reverse("listing", args=[listing_id]))
 
 @login_required
